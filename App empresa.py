@@ -1,4 +1,4 @@
-cd gz_services
+cd mv_construcciones
 python - m venv venv
 source venv/bin/activate  # En Windows: venv\Scripts\activate
 
