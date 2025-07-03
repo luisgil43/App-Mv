@@ -1,3 +1,5 @@
+from cloudinary_storage.storage import MediaCloudinaryStorage
+from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
@@ -6,7 +8,7 @@ from django.utils.module_loading import import_string
 from django.core.exceptions import ImproperlyConfigured
 from datetime import timedelta, date
 from django.db.models import Sum
-from decimal import Decimal
+from django.core.files.storage import default_storage
 
 # ✅ Firma en Cloudinary
 
@@ -137,3 +139,19 @@ class CustomUser(AbstractUser):
     def __str__(self):
         nombre = self.get_full_name() or self.username
         return f"{self.identidad or 'Sin RUT'} - {nombre}"
+
+
+def ruta_firma_representante(instance, filename):
+    return f"firmas_representante_legal/{filename}"
+
+
+class FirmaRepresentanteLegal(models.Model):
+    archivo = models.FileField(
+        upload_to=ruta_firma_representante,
+        storage=MediaCloudinaryStorage(),
+        verbose_name="Firma del Representante Legal"
+    )
+    fecha_subida = models.DateTimeField(null=False, blank=False)
+
+    def __str__(self):
+        return f"Firma representante legal (ID: {self.pk})"
